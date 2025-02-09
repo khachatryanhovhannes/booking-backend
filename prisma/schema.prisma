@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String    @unique
+  password   String
+  image_url  String?
+  role       User_role @default(USER)
+
+  providers Providers? @relation("UserToProvider")
+  bookings  Booking[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Providers {
+  id              Int     @id @default(autoincrement())
+  user_id         Int     @unique
+  category_id     Int
+  description     String?
+  profile_url     String?
+  available_times Json?
+
+  user     User       @relation("UserToProvider", fields: [user_id], references: [id])
+  category Categories @relation(fields: [category_id], references: [id])
+  bookings Booking[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("providers")
+}
+
+enum User_role {
+  ADMIN
+  USER
+  PROVIDER
+}
+
+model Categories {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique
+  parent_id Int         @default(0)
+  providers Providers[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("categories")
+}
+
+model Booking {
+  id           Int           @id @default(autoincrement())
+  user_id      Int
+  provider_id  Int
+  booking_date DateTime
+  time_slot    String
+  status       BookingStatus @default(PENDING)
+
+  user     User      @relation(fields: [user_id], references: [id])
+  provider Providers @relation(fields: [provider_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("bookings")
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+}
