@@ -21,6 +21,8 @@ model User {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@map("users")
 }
 
 model Providers {
@@ -37,6 +39,8 @@ model Providers {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@map("providers")
 }
 
 enum User_role {
@@ -53,6 +57,8 @@ model Categories {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@map("categories")
 }
 
 model Booking {
@@ -68,6 +74,8 @@ model Booking {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@map("bookings")
 }
 
 enum BookingStatus {
